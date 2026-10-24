@@ -26,55 +26,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       
-      - name: Install Visual Studio platform toolset v141
-        run: |
-          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --quiet --norestart --includeRecommended --installPath "C:\Program Files\Microsoft Visual Studio\18\Enterprise" --channelId VisualStudio.15.Release --add Microsoft.VisualStudio.Component.VC.v141.x86.x64
+      - name: List C
+        run: echo "Listing C..." && dir "C:\"
 
-      - name: Create directory for dependencies
-        run: mkdir ${{env.EXTERNAL_LIBS_Folder}}
-        
-      - uses: ilammy/msvc-dev-cmd@v1
-      - name: Download and install faad2
-        run: |
-          git clone --revision ${{env.FAAD2_COMMIT}} https://github.com/FreewareAdvancedAudio/faad2
-          cd faad2
-          mkdir build
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
-          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
-          -DBUILD_SHARED_LIBS=OFF
-          cmake --build build --config Release
-          cmake --install build
-          
-      - name: Clean up faad2 installation
-        run: rmdir /q /s ${{ github.workspace }}\faad2
+      - name: List Program Files
+        run: echo "Listing Program Files..." && dir "C:\Program Files"
 
-      - name: Download and install enet
-        run: |
-          git clone --revision ${{env.ENET_COMMIT}} https://github.com/lsalzman/enet
-          cd enet
-          mkdir build
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
-          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
-          -DBUILD_SHARED_LIBS=OFF
-          cmake --build build --config Release
-          cmake --install build
-          
-      - name: Clean up enet installation
-        run: rmdir /q /s ${{ github.workspace }}\enet
-
-      - name: Download and install zstd
-        run: |
-          git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
-          cd zstd
-          cmake -S . -B build-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
-          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
-          -DZSTD_BUILD_TESTS=OFF -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_SHARED=OFF
-          cmake --build build-cmake
-          echo "Listing build dir..." && dir /S "${{github.workspace}}\zstd\build"
-          echo "Listing build-cmake dir..." && dir /S build-cmake
-          
-      - name: Clean up zstd installation
-        run: rmdir /q /s ${{ github.workspace }}\zstd
-
-      - name: List dir
-        run: dir /S ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}
+      - name: List Program Files (x86)
+        run: echo "Listing Program Files (x86)..." && dir "C:\Program Files (x86)"
