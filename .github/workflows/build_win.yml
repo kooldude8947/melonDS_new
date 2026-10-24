@@ -1,0 +1,47 @@
+name: melonDS Windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+env:
+  EXTERNAL_LIBS_Folder: external_libs
+  FAAD2_COMMIT: 0fb09739d34a0deb59ee797758c5c02e81c3463c
+  MELONDS_GIT_BRANCH: ${{ github.ref }}
+  MELONDS_GIT_HASH: ${{ github.sha }}
+  MELONDS_BUILD_PROVIDER: GitHub Actions
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+   
+jobs:
+  build:
+    runs-on: windows-2025-vs2026
+    defaults:
+      run:
+        shell: cmd
+    steps:
+      - uses: actions/checkout@v7
+      
+      - name: Install Visual Studio platform toolset v141
+        run: |
+          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --quiet --norestart --includeRecommended --installPath "C:\Program Files\Microsoft Visual Studio\2026\Enterprise" --channelId VisualStudio.15.Release --add Microsoft.VisualStudio.Component.VC.v141.x86.x64
+
+      - name: Create directory for libs
+        run: mkdir ${{env.EXTERNAL_LIBS_Folder}}
+        
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          toolset: 14.1
+      - name: Download and install faad2
+        run: |
+          git clone --revision ${{env.FAAD2_COMMIT}} https://github.com/FreewareAdvancedAudio/faad2
+          cd faad2
+          mkdir build
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} -DBUILD_SHARED_LIBS=false
+          cmake --build build --config Release
+          cmake --install build
+  
+      - name: List dir
+        run: dir /S ${{env.EXTERNAL_LIBS_Folder}}
