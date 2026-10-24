@@ -23,6 +23,8 @@ jobs:
         shell: cmd
     steps:
       - uses: actions/checkout@v7
+      - name: List VS directory
+        run: echo "Listing first.." && dir "C:\Program Files (x86)\Microsoft Visual Studio\Installer" && echo "Listing second..." && dir "C:\Program Files\Microsoft Visual Studio\" && echo "Listing third..." && dir "C:\Program Files\Microsoft Visual Studio\2026"
       
       - name: Install Visual Studio platform toolset v141
         run: |
