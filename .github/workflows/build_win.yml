@@ -9,6 +9,7 @@ on:
       - main
 env:
   EXTERNAL_LIBS_Folder: external_libs
+  ENET_COMMIT: 5a9c537fd464b3c6d3c55e1d3bd47588faf71b42
   FAAD2_COMMIT: 0fb09739d34a0deb59ee797758c5c02e81c3463c
   MELONDS_GIT_BRANCH: ${{ github.ref }}
   MELONDS_GIT_HASH: ${{ github.sha }}
@@ -45,3 +46,20 @@ jobs:
           
       - name: Clean up faad2 installation
         run: rmdir /q /s ${{ github.workspace }}\faad2
+
+      - name: Download and install enet
+        run: |
+          git clone --revision ${{env.ENET_COMMIT}} https://github.com/lsalzman/enet
+          cd enet
+          mkdir build
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
+          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
+          -DBUILD_SHARED_LIBS=OFF
+          cmake --build build --config Release
+          cmake --install build
+          
+      - name: Clean up enet installation
+        run: rmdir /q /s ${{ github.workspace }}\enet
+
+      - name: List dir
+        run: dir /S ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}
