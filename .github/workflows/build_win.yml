@@ -23,12 +23,10 @@ jobs:
         shell: cmd
     steps:
       - uses: actions/checkout@v7
-      - name: List VS directory
-        run: echo "Listing first.." && dir "C:\Program Files (x86)\Microsoft Visual Studio\Installer" && echo "Listing second..." && dir "C:\Program Files\Microsoft Visual Studio\" && echo "Listing third..." && dir "C:\Program Files\Microsoft Visual Studio\18"
       
       - name: Install Visual Studio platform toolset v141
         run: |
-          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --quiet --norestart --includeRecommended --installPath "C:\Program Files\Microsoft Visual Studio\2026\Enterprise" --channelId VisualStudio.15.Release --add Microsoft.VisualStudio.Component.VC.v141.x86.x64
+          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --quiet --norestart --includeRecommended --installPath "C:\Program Files\Microsoft Visual Studio\18\Enterprise" --channelId VisualStudio.15.Release --add Microsoft.VisualStudio.Component.VC.v141.x86.x64
 
       - name: Create directory for libs
         run: mkdir ${{env.EXTERNAL_LIBS_Folder}}
