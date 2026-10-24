@@ -42,4 +42,6 @@ jobs:
           -DBUILD_SHARED_LIBS=OFF
           cmake --build build --config Release
           cmake --install build
-          rmdir /q /s ${{ github.workspace }}\faad2
+          
+      - name: Clean up faad2 installation
+        run: rmdir /q /s ${{ github.workspace }}\faad2
