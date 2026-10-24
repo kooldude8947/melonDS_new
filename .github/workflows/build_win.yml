@@ -32,14 +32,12 @@ jobs:
         run: mkdir ${{env.EXTERNAL_LIBS_Folder}}
         
       - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          toolset: 14.1
       - name: Download and install faad2
         run: |
           git clone --revision ${{env.FAAD2_COMMIT}} https://github.com/FreewareAdvancedAudio/faad2
           cd faad2
           mkdir build
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} -DBUILD_SHARED_LIBS=OFF
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} -DBUILD_SHARED_LIBS=OFF
           cmake --build build --config Release
           cmake --install build
   
