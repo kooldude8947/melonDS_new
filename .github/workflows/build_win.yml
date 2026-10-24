@@ -70,7 +70,7 @@ jobs:
           -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
           -DZSTD_BUILD_TESTS=OFF -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_SHARED=OFF
           cmake --build build-cmake
-          cmake --install build-cmake
+          cmake --install ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}
           
       - name: Clean up zstd installation
         run: rmdir /q /s ${{ github.workspace }}\zstd
