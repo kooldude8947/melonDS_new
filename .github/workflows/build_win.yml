@@ -19,12 +19,27 @@ env:
    
 jobs:
   build:
-    runs-on: windows-2025-vs2026
+    runs-on: windows-2022
     defaults:
       run:
         shell: cmd
     steps:
       - uses: actions/checkout@v7
 
-      - name: List zstd
-        run: echo "Listing zstd..." && dir /S "C:\tools\zstd"
+      - name: Download zstd
+        run: git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
+        
+      - name: Install zstd
+        working-directory: ${{github.workspace}}\zstd\build\VS_scripts
+        shell: pwsh
+        run: |
+          .\build.generic.cmd VS2022 x64 Release v143
+
+      - name: List dir
+        run: dir /S ${{github.workspace}}
+        
+      - name: Clean up zstd installation
+        run: rmdir /q /s ${{ github.workspace }}\zstd
+
+      - name: List dir
+        run: dir /S ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}
