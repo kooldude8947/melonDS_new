@@ -73,9 +73,10 @@ jobs:
           -DZSTD_BUILD_TESTS=OFF -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_STATIC=ON  -DZSTD_BUILD_SHARED=OFF -DZSTD_BUILD_PROGRAMS=OFF ^
           -DBUILD_TESTING=OFF ^
           -DBUILD_SHARED_LIBS=OFF ..
+          dir /S ${{ github.workspace }}\zstd\build\cmake
           make
-          make install
 
+          
       - name: Clean up zstd installation
         run: rmdir /q /s ${{ github.workspace }}\zstd
 
