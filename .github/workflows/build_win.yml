@@ -39,7 +39,7 @@ jobs:
           git clone --revision ${{env.FAAD2_COMMIT}} https://github.com/FreewareAdvancedAudio/faad2
           cd faad2
           mkdir build
-          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} -DBUILD_SHARED_LIBS=false
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} -DBUILD_SHARED_LIBS=OFF
           cmake --build build --config Release
           cmake --install build
   
