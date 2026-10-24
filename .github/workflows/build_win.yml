@@ -25,15 +25,6 @@ jobs:
         shell: cmd
     steps:
       - uses: actions/checkout@v7
-      
-      - name: List C
-        run: echo "Listing C..." && dir "C:\"
 
-      - name: List Program Files
-        run: echo "Listing Program Files..." && dir "C:\Program Files"
-
-      - name: List Program Files (x86)
-        run: echo "Listing Program Files (x86)..." && dir "C:\Program Files (x86)"
-
-      - name: List Tools
-        run: echo "Listing tools..." && dir "C:\tools"
+      - name: List zstd
+        run: echo "Listing zstd..." && dir /S "C:\tools\zstd"
