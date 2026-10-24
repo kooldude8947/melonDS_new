@@ -65,16 +65,9 @@ jobs:
       - name: Download and install zstd
         run: |
           git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
-          cd zstd/build/cmake
-          mkdir build
-          cd build
-          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
-          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
-          -DZSTD_BUILD_TESTS=OFF -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_STATIC=ON  -DZSTD_BUILD_SHARED=OFF -DZSTD_BUILD_PROGRAMS=OFF ^
-          -DBUILD_TESTING=OFF ^
-          -DBUILD_SHARED_LIBS=OFF ..
-          dir /S ${{ github.workspace }}\zstd\build\cmake
-          make
+          cd zstd
+          make libzstd
+          make prefix="${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}" install
 
           
       - name: Clean up zstd installation
