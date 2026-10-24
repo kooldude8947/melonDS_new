@@ -11,7 +11,7 @@ env:
   EXTERNAL_LIBS_Folder: external_libs
   ENET_COMMIT: 5a9c537fd464b3c6d3c55e1d3bd47588faf71b42
   FAAD2_COMMIT: 0fb09739d34a0deb59ee797758c5c02e81c3463c
-  ZSTD_COMMIT: 49cf51799ea051457f57243527aa2058f999f005
+  ZSTD_COMMIT: f8745da6ff1ad1e7bab384bd1f9d742439278e99
   MELONDS_GIT_BRANCH: ${{ github.ref }}
   MELONDS_GIT_HASH: ${{ github.sha }}
   MELONDS_BUILD_PROVIDER: GitHub Actions
@@ -25,20 +25,52 @@ jobs:
         shell: cmd
     steps:
       - uses: actions/checkout@v7
+      
+      - name: Install Visual Studio platform toolset v141
+        run: |
+          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --quiet --norestart --includeRecommended --installPath "C:\Program Files\Microsoft Visual Studio\18\Enterprise" --channelId VisualStudio.15.Release --add Microsoft.VisualStudio.Component.VC.v141.x86.x64
 
-      - name: Download zstd
-        run: git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
-
+      - name: Create directory for dependencies
+        run: mkdir ${{env.EXTERNAL_LIBS_Folder}}
+        
       - uses: ilammy/msvc-dev-cmd@v1
-      - name: Install zstd
-        working-directory: ${{github.workspace}}\zstd\build\VS_scripts
+      - name: Download and install faad2
+        run: |
+          git clone --revision ${{env.FAAD2_COMMIT}} https://github.com/FreewareAdvancedAudio/faad2
+          cd faad2
+          mkdir build
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
+          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
+          -DBUILD_SHARED_LIBS=OFF
+          cmake --build build --config Release
+          cmake --install build
+          
+      - name: Clean up faad2 installation
+        run: rmdir /q /s ${{ github.workspace }}\faad2
+
+      - name: Download and install enet
+        run: |
+          git clone --revision ${{env.ENET_COMMIT}} https://github.com/lsalzman/enet
+          cd enet
+          mkdir build
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
+          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
+          -DBUILD_SHARED_LIBS=OFF
+          cmake --build build --config Release
+          cmake --install build
+          
+      - name: Clean up enet installation
+        run: rmdir /q /s ${{ github.workspace }}\enet
+
+      - name: Download and install zstd
         shell: pwsh
         run: |
-          .\build.generic.cmd VS2022 x64 Release v143
+          git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
+          cd zstd/build/VS_scripts
+          .\build.generic.cmd VS2022 x64 Release v141
+          robocopy ${{github.workspace}}\zstd\lib ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\include *.h
+          robocopy ${{github.workspace}}\zstd\build\VS_scripts\bin\Release\x64 ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\lib libzstd_static.lib
 
-      - name: List dir
-        run: dir /S ${{github.workspace}}
-        
       - name: Clean up zstd installation
         run: rmdir /q /s ${{ github.workspace }}\zstd
 
