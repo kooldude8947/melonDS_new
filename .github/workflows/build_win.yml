@@ -66,8 +66,8 @@ jobs:
         run: |
           git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
           cd zstd
-          make libzstd
-          make prefix="${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}" install
+          make
+          make prefix="D:/a/melonDS_new/melonDS_new/external_libs" install
 
           
       - name: Clean up zstd installation
