@@ -67,7 +67,7 @@ jobs:
         run: |
           git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
           cd zstd/build/VS_scripts
-          .\build.generic.cmd VS2022 x64 Release v141 WindowsTargetPlatformVersion=6.1.7601
+          .\build.generic.cmd VS2022 x64 Release v141 /p:WindowsTargetPlatformVersion=6.1.7601
           robocopy ${{github.workspace}}\zstd\lib ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\include *.h
           robocopy ${{github.workspace}}\zstd\build\VS_scripts\bin\Release\x64 ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\lib libzstd_static.lib
 
