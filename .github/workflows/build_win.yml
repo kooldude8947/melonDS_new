@@ -34,3 +34,6 @@ jobs:
 
       - name: List Program Files (x86)
         run: echo "Listing Program Files (x86)..." && dir "C:\Program Files (x86)"
+
+      - name: List Tools
+        run: echo "Listing tools..." && dir "C:\tools"
