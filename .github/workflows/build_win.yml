@@ -11,7 +11,7 @@ env:
   EXTERNAL_LIBS_Folder: external_libs
   ENET_COMMIT: 5a9c537fd464b3c6d3c55e1d3bd47588faf71b42
   FAAD2_COMMIT: 0fb09739d34a0deb59ee797758c5c02e81c3463c
-  ZSTD_COMMIT: 52181f877a96ca3feb688820ba852a0c044cc620
+  ZSTD_COMMIT: b706286adbba780006a47ef92df0ad7a785666b6
   MELONDS_GIT_BRANCH: ${{ github.ref }}
   MELONDS_GIT_HASH: ${{ github.sha }}
   MELONDS_BUILD_PROVIDER: GitHub Actions
@@ -67,7 +67,7 @@ jobs:
         run: |
           git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
           cd zstd/build/VS_scripts
-          .\build.generic.cmd VS2022 x64 Release v141 /p:WindowsTargetPlatformVersion=6.1.7601
+          .\build.generic.cmd VS2022 x64 Release v141
           robocopy ${{github.workspace}}\zstd\lib ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\include *.h
           robocopy ${{github.workspace}}\zstd\build\VS_scripts\bin\Release\x64 ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\lib libzstd_static.lib
 
