@@ -28,7 +28,8 @@ jobs:
 
       - name: Download zstd
         run: git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
-        
+
+      - uses: ilammy/msvc-dev-cmd@v1
       - name: Install zstd
         working-directory: ${{github.workspace}}\zstd\build\VS_scripts
         shell: pwsh
