@@ -9,6 +9,7 @@ on:
       - main
 env:
   EXTERNAL_LIBS_Folder: external_libs
+  DIRENT_COMMIT: 31db6474b5231c180bd4618c8c90e43af50c86d0
   ENET_COMMIT: 5a9c537fd464b3c6d3c55e1d3bd47588faf71b42
   FAAD2_COMMIT: 0fb09739d34a0deb59ee797758c5c02e81c3463c
   ZSTD_COMMIT: f8745da6ff1ad1e7bab384bd1f9d742439278e99
@@ -78,3 +79,14 @@ jobs:
 
       - name: Clean up zstd installation
         run: rmdir /q /s ${{ github.workspace }}\zstd
+
+      - name: Install dirent
+        run: |
+          git clone --revision ${{env.DIRENT_COMMIT}} https://github.com/tronkko/dirent
+          copy /v /y ${{ github.workspace }}\dirent\include\*.h ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\include
+
+      - name: Clean up dirent installation
+        run: rmdir /q /s ${{ github.workspace }}\dirent
+
+      - name: List dir
+        run: dir /S ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}
