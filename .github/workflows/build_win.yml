@@ -62,11 +62,16 @@ jobs:
       - name: Clean up enet installation
         run: rmdir /q /s ${{ github.workspace }}\enet
 
-      - name: Download and install zstd
-        shell: pwsh
+      - name: Download zstd
         run: |
           git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
-          cd zstd/build/VS_scripts
+          copy /v /y ${{ github.workspace }}\zstd_extra\build.generic.cmd ${{ github.workspace }}\zstd\build\VS_scripts
+          rmdir /q /s ${{ github.workspace }}\zstd_extra
+          
+      - name: Install zstd
+        working-directory: ${{ github.workspace }}\zstd\build\VS_scripts
+        shell: pwsh
+        run: |
           .\build.generic.cmd VS2022 x64 Release v141
           robocopy ${{github.workspace}}\zstd\lib ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\include *.h
           robocopy ${{github.workspace}}\zstd\build\VS_scripts\bin\Release\x64 ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\lib libzstd_static.lib
