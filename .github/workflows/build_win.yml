@@ -79,6 +79,8 @@ jobs:
           ninja
           echo "Listing build dir..."
           dir /S build
+          echo "Listing lib dir..."
+          dir /S lib
 
       - name: Clean up zstd installation
         run: rmdir /q /s ${{ github.workspace }}\zstd
