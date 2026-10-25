@@ -73,7 +73,9 @@ jobs:
       - name: Install zstd
         working-directory: ${{ github.workspace }}\zstd
         run: |
-          cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} -DCMAKE_BUILD_TYPE=Release -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_CONTRIB=OFF -DZSTD_BUILD_TESTS=OFF -DZSTD_USE_STATIC_RUNTIME=OFF -DZSTD_PROGRAMS_LINK_SHARED=OFF -DZSTD_BUILD_STATIC=OFF -DZSTD_BUILD_SHARED=ON -DBUILD_SHARED_LIBS=OFF ${{ github.workspace }}\zstd\build\cmake
+          cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} -DCMAKE_BUILD_TYPE=Release ^
+          -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_CONTRIB=OFF -DZSTD_BUILD_TESTS=OFF ^
+          -DZSTD_USE_STATIC_RUNTIME=OFF -DZSTD_PROGRAMS_LINK_SHARED=OFF -DZSTD_BUILD_STATIC=ON -DZSTD_BUILD_SHARED=OFF -DBUILD_SHARED_LIBS=OFF ${{ github.workspace }}\zstd\build\cmake
           ninja
           echo "Listing build dir..."
           dir /S build
