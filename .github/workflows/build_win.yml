@@ -34,6 +34,8 @@ jobs:
         run: mkdir ${{env.EXTERNAL_LIBS_Folder}}
         
       - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          toolset: 14.1
       - name: Download and install faad2
         run: |
           git clone --revision ${{env.FAAD2_COMMIT}} https://github.com/FreewareAdvancedAudio/faad2
@@ -69,10 +71,11 @@ jobs:
           rmdir /q /s ${{ github.workspace }}\zstd_extra
           
       - name: Install zstd
-        working-directory: ${{ github.workspace }}\zstd\build\VS_scripts
+        working-directory: ${{ github.workspace }}\zstd
         shell: pwsh
         run: |
-          .\build.generic.cmd VS2022 x64 Release v141
+          cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} -DCMAKE_BUILD_TYPE=Release -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_CONTRIB=OFF -DZSTD_BUILD_TESTS=OFF -DZSTD_USE_STATIC_RUNTIME=OFF -DZSTD_PROGRAMS_LINK_SHARED=OFF -DZSTD_BUILD_STATIC=OFF -DZSTD_BUILD_SHARED=ON -DBUILD_SHARED_LIBS=OFF ${{ github.workspace }}\zstd\build\cmake
+          ninja install
           robocopy ${{github.workspace}}\zstd\lib ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\include *.h
           robocopy ${{github.workspace}}\zstd\build\VS_scripts\bin\Release\x64 ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\lib libzstd_static.lib
 
