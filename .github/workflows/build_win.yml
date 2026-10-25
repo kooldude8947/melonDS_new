@@ -34,6 +34,8 @@ jobs:
         run: mkdir ${{env.EXTERNAL_LIBS_Folder}}
         
       - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          toolset: 14.1
       - name: Install faad2
         run: |
           git clone --revision ${{env.FAAD2_COMMIT}} https://github.com/FreewareAdvancedAudio/faad2
@@ -75,6 +77,3 @@ jobs:
 
       - name: Clean up zstd installation
         run: rmdir /q /s ${{ github.workspace }}\zstd
-
-      - name: List dir
-        run: dir /S ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}
