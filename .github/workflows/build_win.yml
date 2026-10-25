@@ -34,9 +34,7 @@ jobs:
         run: mkdir ${{env.EXTERNAL_LIBS_Folder}}
         
       - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          toolset: 14.1
-      - name: Download and install faad2
+      - name: Install faad2
         run: |
           git clone --revision ${{env.FAAD2_COMMIT}} https://github.com/FreewareAdvancedAudio/faad2
           cd faad2
@@ -50,7 +48,7 @@ jobs:
       - name: Clean up faad2 installation
         run: rmdir /q /s ${{ github.workspace }}\faad2
 
-      - name: Download and install enet
+      - name: Install enet
         run: |
           git clone --revision ${{env.ENET_COMMIT}} https://github.com/lsalzman/enet
           cd enet
@@ -64,25 +62,16 @@ jobs:
       - name: Clean up enet installation
         run: rmdir /q /s ${{ github.workspace }}\enet
 
-      - name: Download zstd
+      - name: Install zstd
         run: |
           git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
-          copy /v /y ${{ github.workspace }}\zstd_extra\build.generic.cmd ${{ github.workspace }}\zstd\build\VS_scripts
-          rmdir /q /s ${{ github.workspace }}\zstd_extra
-          
-      - name: Install zstd
-        working-directory: ${{ github.workspace }}\zstd
-        run: |
+          cd zstd
           cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} -DCMAKE_BUILD_TYPE=Release ^
           -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_CONTRIB=OFF -DZSTD_BUILD_TESTS=OFF ^
           -DZSTD_USE_STATIC_RUNTIME=OFF -DZSTD_PROGRAMS_LINK_SHARED=OFF -DZSTD_BUILD_STATIC=ON -DZSTD_BUILD_SHARED=OFF -DBUILD_SHARED_LIBS=OFF ${{ github.workspace }}\zstd\build\cmake
           ninja
           copy /v /y ${{ github.workspace }}\zstd\lib\zstd_static.lib ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\lib
           copy /v /y ${{ github.workspace }}\zstd\lib\*.h ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\include
-          echo "Listing build dir..."
-          dir /S build
-          echo "Listing lib dir..."
-          dir /S lib
 
       - name: Clean up zstd installation
         run: rmdir /q /s ${{ github.workspace }}\zstd
