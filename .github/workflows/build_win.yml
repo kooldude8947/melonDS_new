@@ -11,6 +11,7 @@ env:
   EXTERNAL_LIBS_Folder: external_libs
   ENET_COMMIT: 5a9c537fd464b3c6d3c55e1d3bd47588faf71b42
   FAAD2_COMMIT: 0fb09739d34a0deb59ee797758c5c02e81c3463c
+  ZSTD_COMMIT: f8745da6ff1ad1e7bab384bd1f9d742439278e99
   MELONDS_GIT_BRANCH: ${{ github.ref }}
   MELONDS_GIT_HASH: ${{ github.sha }}
   MELONDS_BUILD_PROVIDER: GitHub Actions
@@ -33,7 +34,9 @@ jobs:
         run: mkdir ${{env.EXTERNAL_LIBS_Folder}}
         
       - uses: ilammy/msvc-dev-cmd@v1
-      - name: Download and install faad2
+        with:
+          toolset: 14.1
+      - name: Install faad2
         run: |
           git clone --revision ${{env.FAAD2_COMMIT}} https://github.com/FreewareAdvancedAudio/faad2
           cd faad2
@@ -47,7 +50,7 @@ jobs:
       - name: Clean up faad2 installation
         run: rmdir /q /s ${{ github.workspace }}\faad2
 
-      - name: Download and install enet
+      - name: Install enet
         run: |
           git clone --revision ${{env.ENET_COMMIT}} https://github.com/lsalzman/enet
           cd enet
@@ -60,3 +63,18 @@ jobs:
           
       - name: Clean up enet installation
         run: rmdir /q /s ${{ github.workspace }}\enet
+
+      - name: Install zstd
+        run: |
+          git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
+          cd zstd
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
+          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
+          -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_CONTRIB=OFF -DZSTD_BUILD_TESTS=OFF ^
+          -DZSTD_USE_STATIC_RUNTIME=OFF -DZSTD_PROGRAMS_LINK_SHARED=OFF -DZSTD_BUILD_STATIC=ON -DZSTD_BUILD_SHARED=OFF -DBUILD_SHARED_LIBS=OFF ${{ github.workspace }}\zstd\build\cmake
+          ninja
+          copy /v /y ${{ github.workspace }}\zstd\lib\zstd_static.lib ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\lib
+          copy /v /y ${{ github.workspace }}\zstd\lib\*.h ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\include
+
+      - name: Clean up zstd installation
+        run: rmdir /q /s ${{ github.workspace }}\zstd
