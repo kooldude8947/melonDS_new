@@ -11,7 +11,7 @@ env:
   EXTERNAL_LIBS_Folder: external_libs
   ENET_COMMIT: 5a9c537fd464b3c6d3c55e1d3bd47588faf71b42
   FAAD2_COMMIT: 0fb09739d34a0deb59ee797758c5c02e81c3463c
-  ZSTD_COMMIT: cbc5225d38ba65a1cd77701e91a9f45f3cc825ba
+  ZSTD_COMMIT: f8745da6ff1ad1e7bab384bd1f9d742439278e99
   MELONDS_GIT_BRANCH: ${{ github.ref }}
   MELONDS_GIT_HASH: ${{ github.sha }}
   MELONDS_BUILD_PROVIDER: GitHub Actions
@@ -72,12 +72,11 @@ jobs:
           
       - name: Install zstd
         working-directory: ${{ github.workspace }}\zstd
-        shell: pwsh
         run: |
           cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} -DCMAKE_BUILD_TYPE=Release -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_CONTRIB=OFF -DZSTD_BUILD_TESTS=OFF -DZSTD_USE_STATIC_RUNTIME=OFF -DZSTD_PROGRAMS_LINK_SHARED=OFF -DZSTD_BUILD_STATIC=OFF -DZSTD_BUILD_SHARED=ON -DBUILD_SHARED_LIBS=OFF ${{ github.workspace }}\zstd\build\cmake
           ninja
-          robocopy ${{github.workspace}}\zstd\lib ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\include *.h
-          robocopy ${{github.workspace}}\zstd\build\VS_scripts\bin\Release\x64 ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\lib libzstd_static.lib
+          echo "Listing build dir..."
+          dir /S build
 
       - name: Clean up zstd installation
         run: rmdir /q /s ${{ github.workspace }}\zstd
