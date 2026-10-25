@@ -68,7 +68,8 @@ jobs:
         run: |
           git clone --revision ${{env.ZSTD_COMMIT}} https://github.com/facebook/zstd
           cd zstd
-          cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} -DCMAKE_BUILD_TYPE=Release ^
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
+          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
           -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_CONTRIB=OFF -DZSTD_BUILD_TESTS=OFF ^
           -DZSTD_USE_STATIC_RUNTIME=OFF -DZSTD_PROGRAMS_LINK_SHARED=OFF -DZSTD_BUILD_STATIC=ON -DZSTD_BUILD_SHARED=OFF -DBUILD_SHARED_LIBS=OFF ${{ github.workspace }}\zstd\build\cmake
           ninja
