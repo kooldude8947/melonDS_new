@@ -133,6 +133,7 @@ jobs:
           -DENABLE_GDBSTUB=OFF ^
           -DBUILD_STATIC=ON ^
           -DBUILD_SHARED_LIBS=OFF ^
+          -DUSE_VCPKG=OFF ^
           -DUSE_QT6=OFF ^
           -DQt5_DIR=${{github.workspace}}\Qt-Win-Static\Qt\Qt-5.15.19\lib\cmake\Qt5 ^
           -DCMAKE_PREFIX_PATH=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}
