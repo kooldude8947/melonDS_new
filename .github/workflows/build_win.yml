@@ -100,5 +100,5 @@ jobs:
           cmake --build build --config Release
           cmake --install build
 
-      - name: List dir
-        run: dir /S ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}
+      - name: Clean up libarchive installation
+        run: rmdir /q /s ${{ github.workspace }}\libarchive
