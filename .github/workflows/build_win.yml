@@ -136,5 +136,7 @@ jobs:
           -DUSE_VCPKG=OFF ^
           -DUSE_QT6=OFF ^
           -DQt5_DIR=${{github.workspace}}\Qt-Win-Static\Qt\Qt-5.15.19\lib\cmake\Qt5 ^
+          -DEXTERNAL_LIBS_INCLUDE_DIR=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\include ^
+          -DEXTERNAL_LIBS_LIB_DIR=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\lib ^
           -DCMAKE_PREFIX_PATH=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}
           cmake --build build --config Release
