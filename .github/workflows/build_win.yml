@@ -18,7 +18,6 @@ env:
   MELONDS_GIT_BRANCH: ${{ github.ref }}
   MELONDS_GIT_HASH: ${{ github.sha }}
   MELONDS_BUILD_PROVIDER: GitHub Actions
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
    
 jobs:
   build:
@@ -29,22 +28,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       
-      - name: Install Visual Studio platform toolset v141
-        run: |
-          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify --quiet --norestart --includeRecommended --installPath "C:\Program Files\Microsoft Visual Studio\18\Enterprise" --channelId VisualStudio.15.Release --add Microsoft.VisualStudio.Component.VC.v141.x86.x64
-
       - name: Create directory for dependencies
         run: mkdir ${{env.EXTERNAL_LIBS_Folder}}
         
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          toolset: 14.1
       - name: Install faad2
         run: |
           git clone --revision ${{env.FAAD2_COMMIT}} https://github.com/FreewareAdvancedAudio/faad2
           cd faad2
           mkdir build
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
+          cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
           -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
           -DBUILD_SHARED_LIBS=OFF
           cmake --build build --config Release
@@ -58,7 +50,7 @@ jobs:
           git clone --revision ${{env.ENET_COMMIT}} https://github.com/lsalzman/enet
           cd enet
           mkdir build
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
+          cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
           -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
           -DBUILD_SHARED_LIBS=OFF
           cmake --build build --config Release
@@ -90,26 +82,12 @@ jobs:
       - name: Clean up dirent installation
         run: rmdir /q /s ${{ github.workspace }}\dirent
 
-      - name: Install libarchive
-        run: |
-          git clone --revision ${{env.LIBARCHIVE_COMMIT}} https://github.com/libarchive/libarchive
-          cd libarchive
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -DWINDOWS_VERSION=WIN7 -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ^
-          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
-          -DENABLE_OPENSSL=OFF -DENABLE_ZSTD=OFF -DENABLE_TEST=OFF ^
-          -DBUILD_SHARED_LIBS=OFF
-          cmake --build build --config Release
-          cmake --install build
-
-      - name: Clean up libarchive installation
-        run: rmdir /q /s ${{ github.workspace }}\libarchive
-
       - name: Install SDL
         run: |
           git clone --revision ${{env.SDL2_COMMIT}} https://github.com/libsdl-org/SDL
           cd SDL
           mkdir build
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_TOOLSET=v141 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
+          cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 ^
           -DCMAKE_INSTALL_PREFIX=${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}} ^
           -DBUILD_SHARED_LIBS=OFF
           cmake --build build --config Release
@@ -117,3 +95,6 @@ jobs:
 
       - name: Clean up SDL installation
         run: rmdir /q /s ${{ github.workspace }}\SDL
+
+      - name: List dir
+        run: dir /S ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}
