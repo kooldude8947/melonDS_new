@@ -31,6 +31,9 @@ jobs:
       
       - name: Create directory for dependencies
         run: mkdir ${{env.EXTERNAL_LIBS_Folder}}
+
+      - name: Install PkgConfig
+        run: choco install pkgconfiglite
         
       - name: Install faad2
         run: |
@@ -69,7 +72,7 @@ jobs:
           -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_CONTRIB=OFF -DZSTD_BUILD_TESTS=OFF ^
           -DZSTD_USE_STATIC_RUNTIME=OFF -DZSTD_PROGRAMS_LINK_SHARED=OFF -DZSTD_BUILD_STATIC=ON -DZSTD_BUILD_SHARED=OFF -DBUILD_SHARED_LIBS=OFF ${{ github.workspace }}\zstd\build\cmake
           ninja
-          copy /v /y ${{ github.workspace }}\zstd\lib\zstd_static.lib ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\lib
+          copy /v /y ${{ github.workspace }}\zstd\lib\libzstd.a ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\lib
           copy /v /y ${{ github.workspace }}\zstd\lib\*.h ${{github.workspace}}\${{env.EXTERNAL_LIBS_Folder}}\include
 
       - name: Clean up zstd installation
