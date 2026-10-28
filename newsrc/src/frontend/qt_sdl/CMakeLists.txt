@@ -87,6 +87,7 @@ target_link_libraries(melonDS PRIVATE net-utils)
 
 if (WIN32)
     link_directories(${EXTERNAL_LIBS_LIB_DIR})
+    link_directories("C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\um\x64")
     target_link_libraries(melonDS PUBLIC opengl32 libfaad.a libzstd.a)
     target_include_directories(melonDS PRIVATE "${EXTERNAL_LIBS_INCLUDE_DIR}")
 
